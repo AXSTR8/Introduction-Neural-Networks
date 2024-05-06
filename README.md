@@ -1,1 +1,2 @@
-"# Introduction-Neural-Networks" 
+# Introduction-to-Neural-Networks
+In this project, the performance differences among various hyperparameters for simple neural network architectures, including Fully Connected Neural Networks and Convolutional Neural Networks, are explored. Utilizing the standard MNIST dataset of handwritten digits, it serves as a practical guide for model development in PyTorch. Moreover, it aims to provide intuition regarding the impact of hyperparameter changes.
