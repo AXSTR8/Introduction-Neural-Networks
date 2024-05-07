@@ -2,37 +2,68 @@ import os
 import torch
 import torch.nn as nn
 import numpy as np
-from Models import FCNN
+from Models import FCNN, CNN
 from pathlib import Path
 import torchvision
 from torch.utils.data import DataLoader
 from torchvision import transforms, datasets
 
-# Define different models push these to the GPU for faster training
+# Define different Fully Connected NN models and push these to the GPU for faster training
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-# The first model
+# The first FCNN model
 hidden_layers_FCNN_1 = [100,100]
 FCNN_1 = FCNN(28*28, hidden_layers_FCNN_1, 10)
 FCNN_1.to(device)
 
-# The first model
+# The second FCNN model
 hidden_layers_FCNN_2 = [100, 100, 100]
 FCNN_2 = FCNN(28*28, hidden_layers_FCNN_1, 10)
 FCNN_2.to(device)
 
-# The third model
+# The third FCNN model
 hidden_layers_FCNN_3 = [150, 150]
 FCNN_3 = FCNN(28*28, hidden_layers_FCNN_1, 10)
 FCNN_3.to(device)
 
-
-# The fourth model
+# The fourth FCNN model
 hidden_layers_FCNN_4 = [150, 150, 150]
 FCNN_4 = FCNN(28*28, hidden_layers_FCNN_1, 10)
 FCNN_4.to(device)
 
-Models = [FCNN_1, FCNN_2, FCNN_3, FCNN_4]
+# Combine all the FCNN models in a list
+FCNN_Models = [FCNN_1, FCNN_2, FCNN_3, FCNN_4]
+
+# Define different Fully Connected NN models and push these to the GPU for faster training
+
+# The first CNN model
+layers_CNN_1 = [[1,16,3],[16,1,3],100]
+CNN_1 = CNN(layers_CNN_1, 10)
+CNN_1.to(device)
+
+# The second CNN model
+layers_CNN_2 = [[1,16,3],[16,16,3],[16,1,3],100]
+CNN_2 = CNN(layers_CNN_2, 10)
+CNN_2.to(device)
+
+# The third CNN model
+layers_CNN_3 = [[1,32,3],[32,1,3],100]
+CNN_3 = CNN(layers_CNN_3, 10)
+CNN_3.to(device)
+
+# The fourth CNN model
+layers_CNN_4 = [[1,32,3],[32,32,3],[32,1,3],100]
+CNN_4 = CNN(layers_CNN_4, 10)
+CNN_4.to(device)
+
+
+# Combine all the FCNN models in a list
+FCNN_Models = [FCNN_1, FCNN_2, FCNN_3, FCNN_4]
+
+# Combine all the FCNN models in a list
+CNN_Models = [CNN_1, CNN_2, CNN_3, CNN_4]
+
+
 
 # Determine the hyperparameters for the training
 batch_size = 32
@@ -49,9 +80,8 @@ train_dataloader = torch.utils.data.DataLoader(dataset=train_dataset, batch_size
 
 test_dataloader = torch.utils.data.DataLoader(dataset=test_dataset, batch_size=batch_size, shuffle=False)
 
-
-
-for i in range(len(Models)):
+# Define the training algorithm for the FCNNs
+for i in range(len(FCNN_Models)):
     for lr in range(len(learning_rates)):
         # Specify the current directory
         curr_direcotry = os.path.dirname(os.path.realpath(__file__))
@@ -76,7 +106,7 @@ for i in range(len(Models)):
         
         
             # Define the optimizer and the loss function and create a loss tracking list
-            optimizer = torch.optim.Adam(Models[i].parameters(), lr=learning_rates[lr])
+            optimizer = torch.optim.Adam(FCNN_Models[i].parameters(), lr=learning_rates[lr])
             criterion = nn.CrossEntropyLoss()
             loss_tracker = []
 
@@ -90,7 +120,7 @@ for i in range(len(Models)):
                     images = torch.flatten(images, start_dim=1)
 
                     # Forward pass
-                    outputs = Models[i].forward(images)
+                    outputs = FCNN_Models[i].forward(images)
                     loss = criterion(outputs, targets)
                     loss_tracker.append(loss.cpu().detach().numpy())
 
@@ -102,7 +132,7 @@ for i in range(len(Models)):
                 # Report over the training progress after certain epoch
                 print(f"FCNN_{i+1}: In epoch {epoch+1} with loss = {loss.item()}.")
             
-            torch.save(Models[i].state_dict(), current_model_path)
+            torch.save(FCNN_Models[i].state_dict(), current_model_path)
 
             with open(current_model_loss_path, "w") as f:
                 for item in loss_tracker:
