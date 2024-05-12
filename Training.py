@@ -63,8 +63,6 @@ FCNN_Models = [FCNN_1, FCNN_2, FCNN_3, FCNN_4]
 # Combine all the FCNN models in a list
 CNN_Models = [CNN_1, CNN_2, CNN_3, CNN_4]
 
-
-
 # Determine the hyperparameters for the training
 batch_size = 32
 epochs = 27
