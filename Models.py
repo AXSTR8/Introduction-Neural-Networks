@@ -26,6 +26,7 @@ class CNN(nn.Module):  # Convolutional Neural Network
         self.linear_layers = nn.ModuleList()
         self.linear_layers.extend([nn.Conv2d(CNN_layers[i][0], CNN_layers[i][1], CNN_layers[i][2]) for i in range(len(CNN_layers)-1)])
         self.linear_layers.append(nn.AvgPool2d(2))
+        self.linear_layers.append(nn.Flatten(1))
         self.linear_layers.append(nn.Linear(CNN_layers[-1], output_dimension))
         self.rl = nn.ReLU()
 
