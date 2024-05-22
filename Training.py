@@ -11,6 +11,9 @@ from torchvision import transforms, datasets
 # Define different Fully Connected NN models and push these to the GPU for faster training
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
+# Set the seed for random numbers
+torch.manual_seed(142)
+
 # The first FCNN model
 hidden_layers_FCNN_1 = [100,100]
 FCNN_1 = FCNN(28*28, hidden_layers_FCNN_1, 10)
@@ -132,7 +135,7 @@ def training(model: torch.nn.Module, fc= False,epochs=10, lr=1e-4, dataloader = 
         if test_dataloader != None:
             test_accuracy = testing(model, test_dataloader, fc = fc)
             test_accuracy_tracker.append(test_accuracy)
-            print(f"{str(model).split('(')[0]}: epoch {epoch+1} with loss {loss_tracker[-1]} and test accuracy {test_accuracy}. ")
+            print(f"{str(model).split('(')[0]}_: epoch {epoch+1} with loss {loss_tracker[-1]} and test accuracy {test_accuracy}. ")
         else:
             print(f"{str(model).split('(')[0]}: epoch {epoch+1} and the loss is {loss_tracker[-1]}.")
 
@@ -213,16 +216,16 @@ for model_CNN in CNN_Models:
     for l in range(len(learning_rates)):
         # Reset the parameters of the model
         inintial_model_directory = Path(curr_directory + "/CNN_Model_Parameters_Initial")       # A directory for the model parameters
-        initial_model_path = Path(inintial_model_directory / f"{str(model).split('(')[0]}_{CNN_Models.index(model)}")
+        initial_model_path = Path(inintial_model_directory / f"{str(model_CNN).split('(')[0]}_{CNN_Models.index(model_CNN)}")
         model_CNN.load_state_dict(torch.load(initial_model_path))
 
         # Specify the directory to save the current model
         model_directory = Path(curr_directory + "/CNN_Model_Parameters")       # A directory for the model parameters
         loss_directory = Path(curr_directory + "/CNN_Model_Loss")                    # A directory for the model losses
         accuracy_directory = Path(curr_directory + "/CNN_Model_Accuracy")                    # A directory for the model accuracy
-        current_model_path = Path(model_directory / f"{str(model).split('(')[0]}_{CNN_Models.index(model)}_lr_{learning_rates[lr]}")
-        current_model_loss_path = Path(loss_directory / f"{str(model).split('(')[0]}_{CNN_Models.index(model)}_lr_{learning_rates[lr]}_loss")
-        current_model_accuracy_path = Path(accuracy_directory / f"{str(model).split('(')[0]}_{CNN_Models.index(model)}_lr_{learning_rates[lr]}_accuracy")
+        current_model_path = Path(model_directory / f"{str(model_CNN).split('(')[0]}_{CNN_Models.index(model_CNN)}_lr_{learning_rates[l]}")
+        current_model_loss_path = Path(loss_directory / f"{str(model_CNN).split('(')[0]}_{CNN_Models.index(model_CNN)}_lr_{learning_rates[l]}_loss")
+        current_model_accuracy_path = Path(accuracy_directory / f"{str(model_CNN).split('(')[0]}_{CNN_Models.index(model_CNN)}_lr_{learning_rates[l]}_accuracy")
 
         # Create the directories if they do not exist
         if not os.path.isdir(model_directory):
